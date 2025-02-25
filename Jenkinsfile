@@ -52,7 +52,7 @@ pipeline {
                         }
                     }
                 }
-                        stage('E2E') {
+                stage('E2E') {
                     agent {
                         docker {
                             image 'my-playwright'
@@ -91,7 +91,7 @@ pipeline {
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
                     netlify status
                     netlify deploy --dir=build --json > deploy-output.json
-                    CI_ENVIRONMENT_URL=$(node-jq -r '.deploy_url' deploy-output.json | tr -d '\n')
+                    export CI_ENVIRONMENT_URL=$(node-jq -r '.deploy_url' deploy-output.json | tr -d '\n')
                     npx playwright test --reporter=html
                 '''
             }
@@ -117,7 +117,7 @@ pipeline {
                     netlify --version
                     echo "Deploying to prod. Site ID: $NETLIFY_SITE_ID"
                     netlify status
-                    netlify deploy --dir=build
+                    netlify deploy --prod --dir=build
                     npx playwright test --reporter=html
                 '''
             }
